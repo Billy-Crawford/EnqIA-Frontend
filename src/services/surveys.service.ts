@@ -1,3 +1,5 @@
+// src/services/surveys.service.ts
+
 import { api } from "./api";
 
 export const surveysService = {
@@ -8,6 +10,37 @@ export const surveysService = {
 
   getById: async (id: number) => {
     const res = await api.get(`/surveys/${id}`);
+    return res.data;
+  },
+
+  create: async (data: {
+    title: string;
+    description: string;
+  }) => {
+    const res = await api.post("/surveys/", data);
+    return res.data;
+  },
+
+  update: async (
+    id: number,
+    data: Partial<{
+      title: string;
+      description: string;
+    }>
+  ) => {
+    const res = await api.put(
+      `/surveys/${id}`,
+      data
+    );
+
+    return res.data;
+  },
+
+  delete: async (id: number) => {
+    const res = await api.delete(
+      `/surveys/${id}`
+    );
+
     return res.data;
   },
 
@@ -27,20 +60,27 @@ export const surveysService = {
     return res.data;
   },
 
-  archive: async (id: number) => {
-    const res = await api.patch(
-      `/surveys/${id}/archive`
+   exportCsv: async (surveyId: number) => {
+    const res = await api.get(
+      `/surveys/${surveyId}/export/csv`,
+      {
+        responseType: "blob",
+      }
     );
 
     return res.data;
   },
 
-  unarchive: async (id: number) => {
-    const res = await api.patch(
-      `/surveys/${id}/unarchive`
+  exportExcel: async (surveyId: number) => {
+    const res = await api.get(
+      `/surveys/${surveyId}/export/excel`,
+      {
+        responseType: "blob",
+      }
     );
 
     return res.data;
   },
+
 };
 

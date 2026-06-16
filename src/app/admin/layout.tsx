@@ -29,6 +29,11 @@ export default function AdminLayout({
       href: "/admin/logs",
       badge: "Logs",
     },
+    {
+      label: "Vue Statistiques",
+      href: "/admin/analytics",
+      badge: "Stats",
+    },
   ];
 
   return (
@@ -37,13 +42,9 @@ export default function AdminLayout({
         {/* Sidebar */}
         <aside className="w-72 bg-surface border-r border-border flex flex-col">
           <div className="p-6 border-b border-border">
-            <h1 className="text-2xl font-bold text-primary">
-              EnqIA
-            </h1>
+            <h1 className="text-2xl font-bold text-primary">EnqIA</h1>
 
-            <p className="text-sm text-text-secondary mt-1">
-              Administration
-            </p>
+            <p className="text-sm text-text-secondary mt-1">Administration</p>
           </div>
 
           <nav className="flex-1 p-4 space-y-2">
@@ -70,11 +71,7 @@ export default function AdminLayout({
                     <span
                       className={`
                         text-xs px-2 py-1 rounded-full
-                        ${
-                          active
-                            ? "bg-white/20"
-                            : "bg-primary/15 text-primary"
-                        }
+                        ${active ? "bg-white/20" : "bg-primary/15 text-primary"}
                       `}
                     >
                       {item.badge}
@@ -86,13 +83,9 @@ export default function AdminLayout({
           </nav>
 
           <div className="p-6 border-t border-border">
-            <p className="text-xs text-text-secondary">
-              EnqIA Admin Dashboard
-            </p>
+            <p className="text-xs text-text-secondary">EnqIA Admin Dashboard</p>
 
-            <p className="text-xs text-text-secondary mt-1">
-              Version 1.0
-            </p>
+            <p className="text-xs text-text-secondary mt-1">Version 1.0</p>
           </div>
         </aside>
 
