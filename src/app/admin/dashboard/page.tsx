@@ -1,3 +1,4 @@
+// src/app/admin/dashboard/page.tsx
 "use client";
 
 import Card from "@/components/ui/Card";
