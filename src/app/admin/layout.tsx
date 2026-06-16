@@ -1,3 +1,7 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import RouteGuard from "@/components/auth/RouteGuard";
 
 export default function AdminLayout({
@@ -5,35 +9,98 @@ export default function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+
+  const menu = [
+    {
+      label: "Dashboard",
+      href: "/admin/dashboard",
+    },
+    {
+      label: "Utilisateurs",
+      href: "/admin/users",
+    },
+    {
+      label: "Enquêtes",
+      href: "/admin/surveys",
+    },
+    {
+      label: "Journaux d'activité",
+      href: "/admin/logs",
+      badge: "Logs",
+    },
+  ];
+
   return (
     <RouteGuard>
       <div className="min-h-screen bg-bg text-text-primary flex">
         {/* Sidebar */}
-        <aside className="w-64 bg-surface border-r border-border p-4">
-          <h1 className="text-primary font-bold text-lg mb-6">
-            Admin Panel
-          </h1>
+        <aside className="w-72 bg-surface border-r border-border flex flex-col">
+          <div className="p-6 border-b border-border">
+            <h1 className="text-2xl font-bold text-primary">
+              EnqIA
+            </h1>
 
-          <nav className="flex flex-col gap-3 text-sm">
-            <a href="/admin/dashboard" className="hover:text-primary">
-              Dashboard
-            </a>
-            <a href="/admin/users" className="hover:text-primary">
-              Users
-            </a>
-            <a href="/admin/surveys" className="hover:text-primary">
-              Surveys
-            </a>
-            <a href="/admin/logs" className="hover:text-primary">
-              Logs
-            </a>
+            <p className="text-sm text-text-secondary mt-1">
+              Administration
+            </p>
+          </div>
+
+          <nav className="flex-1 p-4 space-y-2">
+            {menu.map((item) => {
+              const active = pathname === item.href;
+
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`
+                    flex items-center justify-between
+                    px-4 py-3 rounded-xl transition-all
+                    ${
+                      active
+                        ? "bg-primary text-white"
+                        : "hover:bg-bg text-text-primary"
+                    }
+                  `}
+                >
+                  <span>{item.label}</span>
+
+                  {item.badge && (
+                    <span
+                      className={`
+                        text-xs px-2 py-1 rounded-full
+                        ${
+                          active
+                            ? "bg-white/20"
+                            : "bg-primary/15 text-primary"
+                        }
+                      `}
+                    >
+                      {item.badge}
+                    </span>
+                  )}
+                </Link>
+              );
+            })}
           </nav>
+
+          <div className="p-6 border-t border-border">
+            <p className="text-xs text-text-secondary">
+              EnqIA Admin Dashboard
+            </p>
+
+            <p className="text-xs text-text-secondary mt-1">
+              Version 1.0
+            </p>
+          </div>
         </aside>
 
         {/* Content */}
-        <main className="flex-1 p-6">{children}</main>
+        <main className="flex-1 overflow-auto">
+          <div className="p-8">{children}</div>
+        </main>
       </div>
     </RouteGuard>
   );
 }
-
