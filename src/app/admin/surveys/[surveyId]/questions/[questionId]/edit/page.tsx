@@ -1,41 +1,44 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
 import { questionsService } from "@/services/questions.service";
 
 export default function EditQuestionPage({
   params,
 }: {
-  params: { surveyId: string; questionId: string };
+  params: Promise<{ surveyId: string; questionId: string }>;
 }) {
   const router = useRouter();
+
+  // ✅ UNWRAP UNE SEULE FOIS
+  const { surveyId, questionId } = use(params);
 
   const [form, setForm] = useState({
     title: "",
     type: "",
   });
 
-  const load = async () => {
-    // OPTION: si tu ajoutes GET /questions/:id
-    // const data = await questionsService.getById(Number(params.questionId));
-    // setForm(data);
-  };
-
   useEffect(() => {
+    const load = async () => {
+      // optionnel si GET question by id existe
+      // const data = await questionsService.getById(Number(questionId));
+      // setForm(data);
+    };
+
     load();
-  }, []);
+  }, [questionId]);
 
   const submit = async () => {
-    await questionsService.update(Number(params.questionId), form);
-    router.push(`/admin/surveys/${params.surveyId}/questions`);
+    // ❌ plus jamais params.questionId ici
+    await questionsService.update(Number(questionId), form);
+
+    router.push(`/admin/surveys/${surveyId}/questions`);
   };
 
   return (
     <div className="max-w-xl space-y-4">
-      <h1 className="text-2xl font-bold">
-        Modifier question
-      </h1>
+      <h1 className="text-2xl font-bold">Modifier question</h1>
 
       <input
         className="w-full p-3 border border-border bg-surface rounded"

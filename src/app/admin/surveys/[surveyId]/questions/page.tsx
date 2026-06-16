@@ -1,28 +1,27 @@
-// src/app/admin/surveys/[surveyId]/questions/page.tsx
-
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
 import { questionsService } from "@/services/questions.service";
 import Link from "next/link";
 
 export default function SurveyQuestionsPage({
   params,
 }: {
-  params: { surveyId: string };
+  params: Promise<{ surveyId: string }>;
 }) {
-  const id = Number(params.surveyId);
+  // ✅ UNWRAP PROPRE NEXT 16
+  const { surveyId } = use(params);
+  const id = Number(surveyId);
 
   const [questions, setQuestions] = useState<any[]>([]);
 
   const load = async () => {
-    if (!id || Number.isNaN(id)) return;
-
     const data = await questionsService.getBySurvey(id);
     setQuestions(data);
   };
 
   useEffect(() => {
+    if (!id || Number.isNaN(id)) return;
     load();
   }, [id]);
 
@@ -87,4 +86,3 @@ export default function SurveyQuestionsPage({
     </div>
   );
 }
-

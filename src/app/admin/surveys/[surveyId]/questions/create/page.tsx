@@ -1,16 +1,21 @@
+// src/app/admin/surveys/[surveyId]/questions/create/page.tsx
+
 "use client";
 
-import { useState } from "react";
+import { useState, use, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { questionsService } from "@/services/questions.service";
 
 export default function CreateQuestionPage({
   params,
 }: {
-  params: { surveyId: string };
+  params: Promise<{ surveyId: string }>;
 }) {
   const router = useRouter();
-  const surveyId = Number(params.surveyId);
+
+  // ✅ FIX NEXT 16 PROPRE
+  const { surveyId } = use(params);
+  const id = Number(surveyId);
 
   const [form, setForm] = useState({
     title: "",
@@ -18,8 +23,17 @@ export default function CreateQuestionPage({
     options: "",
   });
 
+  // 🔒 sécurité anti NaN (IMPORTANT)
+  useEffect(() => {
+    if (!id || Number.isNaN(id)) {
+      console.error("Invalid surveyId:", surveyId);
+    }
+  }, [id, surveyId]);
+
   const submit = async () => {
-    await questionsService.create(surveyId, {
+    if (!id || Number.isNaN(id)) return;
+
+    await questionsService.create(id, {
       title: form.title,
       type: form.type,
       options:
@@ -28,7 +42,7 @@ export default function CreateQuestionPage({
           : form.options.split(",").map((o) => o.trim()),
     });
 
-    router.push(`/admin/surveys/${surveyId}/questions`);
+    router.push(`/admin/surveys/${id}/questions`);
   };
 
   return (
