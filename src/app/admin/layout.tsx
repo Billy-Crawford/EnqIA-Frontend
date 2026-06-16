@@ -25,14 +25,19 @@ export default function AdminLayout({
       href: "/admin/surveys",
     },
     {
-      label: "Journaux d'activité",
-      href: "/admin/logs",
-      badge: "Logs",
+      label: "Réponses",
+      href: "/admin/responses",
+      badge: "Data",
     },
     {
-      label: "Vue Statistiques",
+      label: "Statistiques",
       href: "/admin/analytics",
       badge: "Stats",
+    },
+    {
+      label: "Journaux",
+      href: "/admin/logs",
+      badge: "Logs",
     },
   ];
 
