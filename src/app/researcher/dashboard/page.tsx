@@ -1,11 +1,15 @@
+// src/app/researcher/dashboard/page.tsx
+
 "use client";
 
 import { useEffect, useState } from "react";
 import { dashboardService } from "@/services/dashboard.service";
+import { authService } from "@/services/auth.service";
 
 export default function ResearcherDashboardPage() {
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
     load();
@@ -13,8 +17,13 @@ export default function ResearcherDashboardPage() {
 
   const load = async () => {
     try {
-      const data = await dashboardService.getResearcherDashboard();
-      setStats(data);
+      const [dashboard, profile] = await Promise.all([
+        dashboardService.getResearcherDashboard(),
+        authService.getProfile(),
+      ]);
+
+      setStats(dashboard);
+      setUser(profile);
     } finally {
       setLoading(false);
     }
@@ -26,10 +35,7 @@ export default function ResearcherDashboardPage() {
         <div className="h-8 w-64 bg-surface animate-pulse rounded" />
         <div className="grid md:grid-cols-4 gap-6">
           {[1, 2, 3, 4].map((i) => (
-            <div
-              key={i}
-              className="h-32 bg-surface animate-pulse rounded-xl"
-            />
+            <div key={i} className="h-32 bg-surface animate-pulse rounded-xl" />
           ))}
         </div>
       </div>
@@ -78,15 +84,15 @@ export default function ResearcherDashboardPage() {
 
   return (
     <div className="space-y-10">
-
       {/* HEADER */}
       <div>
-        <h1 className="text-3xl font-bold">
-          Dashboard Chercheur
-        </h1>
+        <h1 className="text-3xl font-bold">Dashboard Chercheur</h1>
 
         <p className="text-text-secondary mt-1">
-          Vue globale de vos activités de recherche et collecte de données
+          Bienvenue{" "}
+          <span className="font-semibold text-primary">
+            {user?.firstname} {user?.lastname}
+          </span>
         </p>
       </div>
 
@@ -97,32 +103,23 @@ export default function ResearcherDashboardPage() {
             key={card.title}
             className="bg-surface border border-border rounded-xl p-6 hover:shadow-lg transition"
           >
-            <p className="text-text-secondary text-sm">
-              {card.title}
-            </p>
+            <p className="text-text-secondary text-sm">{card.title}</p>
 
             <p className={`text-4xl font-bold mt-2 ${card.color}`}>
               {card.value}
             </p>
 
-            <p className="text-xs text-text-secondary mt-2">
-              {card.hint}
-            </p>
+            <p className="text-xs text-text-secondary mt-2">{card.hint}</p>
           </div>
         ))}
       </div>
 
       {/* INSIGHTS */}
       <div className="grid md:grid-cols-2 gap-6">
-
         <div className="bg-surface border border-border rounded-xl p-6">
-          <h2 className="font-semibold mb-2">
-            Taux de publication
-          </h2>
+          <h2 className="font-semibold mb-2">Taux de publication</h2>
 
-          <p className="text-3xl font-bold text-primary">
-            {engagementRate}%
-          </p>
+          <p className="text-3xl font-bold text-primary">{engagementRate}%</p>
 
           <p className="text-sm text-text-secondary mt-2">
             % de vos enquêtes actuellement actives
@@ -130,9 +127,7 @@ export default function ResearcherDashboardPage() {
         </div>
 
         <div className="bg-surface border border-border rounded-xl p-6">
-          <h2 className="font-semibold mb-2">
-            Activité globale
-          </h2>
+          <h2 className="font-semibold mb-2">Activité globale</h2>
 
           <p className="text-3xl font-bold">
             {stats.responses > 0 ? "Active" : "Faible"}
@@ -142,17 +137,13 @@ export default function ResearcherDashboardPage() {
             Basé sur les réponses collectées
           </p>
         </div>
-
       </div>
 
       {/* QUICK ACTIONS */}
       <div className="bg-surface border border-border rounded-xl p-6">
-        <h2 className="font-semibold mb-4">
-          Actions rapides
-        </h2>
+        <h2 className="font-semibold mb-4">Actions rapides</h2>
 
         <div className="flex flex-wrap gap-3">
-
           <a
             href="/researcher/surveys"
             className="px-4 py-2 rounded-lg bg-primary text-white"
@@ -180,10 +171,8 @@ export default function ResearcherDashboardPage() {
           >
             Analytics
           </a>
-
         </div>
       </div>
-
     </div>
   );
 }
