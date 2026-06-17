@@ -4,9 +4,13 @@
 
 import { useEffect, useState } from "react";
 import { authService } from "@/services/auth.service";
+import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/store/auth.store";
 
 export default function ResearcherProfilePage() {
   const [user, setUser] = useState<any>(null);
+  const router = useRouter();
+  const logout = useAuthStore((s) => s.logout);
 
   const [form, setForm] = useState({
     firstname: "",
@@ -44,13 +48,16 @@ export default function ResearcherProfilePage() {
     load();
   };
 
+  const handleLogout = () => {
+    logout();
+    router.replace("/login");
+  };
+
   if (!user) return <div>Chargement...</div>;
 
   return (
     <div className="space-y-8">
-      <h1 className="text-3xl font-bold">
-        Mon profil chercheur
-      </h1>
+      <h1 className="text-3xl font-bold">Mon profil chercheur</h1>
 
       {/* INFOS */}
       <div className="bg-surface border border-border rounded-xl p-6 space-y-2">
@@ -64,26 +71,20 @@ export default function ResearcherProfilePage() {
           className="p-3 border rounded bg-surface"
           placeholder="Prénom"
           value={form.firstname}
-          onChange={(e) =>
-            setForm({ ...form, firstname: e.target.value })
-          }
+          onChange={(e) => setForm({ ...form, firstname: e.target.value })}
         />
 
         <input
           className="p-3 border rounded bg-surface"
           placeholder="Nom"
           value={form.lastname}
-          onChange={(e) =>
-            setForm({ ...form, lastname: e.target.value })
-          }
+          onChange={(e) => setForm({ ...form, lastname: e.target.value })}
         />
 
         <select
           className="p-3 border rounded bg-surface"
           value={form.gender}
-          onChange={(e) =>
-            setForm({ ...form, gender: e.target.value })
-          }
+          onChange={(e) => setForm({ ...form, gender: e.target.value })}
         >
           <option value="">Gender</option>
           <option value="male">Male</option>
@@ -95,9 +96,7 @@ export default function ResearcherProfilePage() {
           placeholder="Age"
           type="number"
           value={form.age}
-          onChange={(e) =>
-            setForm({ ...form, age: e.target.value })
-          }
+          onChange={(e) => setForm({ ...form, age: e.target.value })}
         />
       </div>
 
@@ -107,7 +106,13 @@ export default function ResearcherProfilePage() {
       >
         Mettre à jour
       </button>
+
+      <button
+        onClick={handleLogout}
+        className="mt-6 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700"
+      >
+        Se déconnecter
+      </button>
     </div>
   );
 }
-

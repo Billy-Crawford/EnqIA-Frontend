@@ -94,6 +94,9 @@ export default function ResearcherDashboardPage() {
             {user?.firstname} {user?.lastname}
           </span>
         </p>
+        <div className="absolute top-6 right-6 text-sm text-text-secondary">
+          {user?.email} • {user?.role}
+        </div>
       </div>
 
       {/* KPI CARDS */}
