@@ -1,0 +1,119 @@
+// src/app/researcher/layout.tsx
+
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+import RouteGuard from "@/components/auth/RouteGuard";
+
+export default function ResearcherLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const pathname = usePathname();
+
+  const menu = [
+    {
+      label: "Dashboard",
+      href: "/researcher/dashboard",
+    },
+    {
+      label: "Mes enquêtes",
+      href: "/researcher/surveys",
+    },
+    {
+      label: "Réponses",
+      href: "/researcher/responses",
+      badge: "Data",
+    },
+    {
+      label: "Statistiques",
+      href: "/researcher/surveys/1/analytics",
+      badge: "Stats",
+    },
+    {
+      label: "Profil",
+      href: "/researcher/profile",
+    },
+  ];
+
+  return (
+    <RouteGuard>
+      <div className="min-h-screen bg-bg text-text-primary flex">
+
+        <aside className="w-72 bg-surface border-r border-border flex flex-col">
+
+          <div className="p-6 border-b border-border">
+            <h1 className="text-2xl font-bold text-primary">
+              EnqIA
+            </h1>
+
+            <p className="text-sm text-text-secondary mt-1">
+              Researcher Space
+            </p>
+          </div>
+
+          <nav className="flex-1 p-4 space-y-2">
+            {menu.map((item) => {
+              const active = pathname === item.href;
+
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`
+                    flex items-center justify-between
+                    px-4 py-3 rounded-xl transition-all
+                    ${
+                      active
+                        ? "bg-primary text-white"
+                        : "hover:bg-bg text-text-primary"
+                    }
+                  `}
+                >
+                  <span>{item.label}</span>
+
+                  {item.badge && (
+                    <span
+                      className={`
+                        text-xs px-2 py-1 rounded-full
+                        ${
+                          active
+                            ? "bg-white/20"
+                            : "bg-primary/15 text-primary"
+                        }
+                      `}
+                    >
+                      {item.badge}
+                    </span>
+                  )}
+                </Link>
+              );
+            })}
+          </nav>
+
+          <div className="p-6 border-t border-border">
+            <p className="text-xs text-text-secondary">
+              EnqIA Researcher
+            </p>
+
+            <p className="text-xs text-text-secondary mt-1">
+              Version 1.0
+            </p>
+          </div>
+
+        </aside>
+
+        <main className="flex-1 overflow-auto">
+          <div className="p-8">
+            {children}
+          </div>
+        </main>
+
+      </div>
+    </RouteGuard>
+  );
+}
+
