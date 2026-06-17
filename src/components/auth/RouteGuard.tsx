@@ -24,28 +24,19 @@ export default function RouteGuard({
     }
 
     // ADMIN
-    if (
-      pathname.startsWith("/admin") &&
-      user.role !== "admin"
-    ) {
+    if (pathname.startsWith("/admin") && user.role !== "admin") {
       router.replace("/login");
       return;
     }
 
     // RESEARCHER
-    if (
-      pathname.startsWith("/researcher") &&
-      user.role !== "researcher"
-    ) {
+    if (pathname.startsWith("/researcher") && user.role !== "researcher") {
       router.replace("/login");
       return;
     }
 
     // RESPONDENT
-    if (
-      pathname.startsWith("/app") &&
-      user.role !== "respondent"
-    ) {
+    if (pathname.startsWith("/respondent") && user.role !== "respondent") {
       router.replace("/login");
       return;
     }

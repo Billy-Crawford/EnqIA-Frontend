@@ -1,3 +1,5 @@
+// src/hooks/useLogin.ts
+
 import { useAuthStore } from "@/store/auth.store";
 import { authService } from "@/services/auth.service";
 import { authStorage } from "@/lib/auth-storage";
@@ -24,7 +26,7 @@ export const useLogin = () => {
     }
 
     if (data.user.role === "respondent") {
-      router.push("/app/dashboard");
+      router.push("/respondent/dashboard");
     }
   };
 

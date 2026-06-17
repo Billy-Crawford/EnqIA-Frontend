@@ -10,5 +10,9 @@ export const dashboardService = {
     const res = await api.get("/dashboard/researcher");
     return res.data;
   },
-};
 
+  getRespondentDashboard: async () => {
+    const res = await api.get("/dashboard/respondent");
+    return res.data;
+  },
+};

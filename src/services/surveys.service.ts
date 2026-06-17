@@ -13,10 +13,12 @@ export const surveysService = {
     return res.data;
   },
 
-  create: async (data: {
-    title: string;
-    description: string;
-  }) => {
+  getMyParticipations: async () => {
+    const res = await api.get("/surveys/my-participations");
+    return res.data;
+  },
+
+  create: async (data: { title: string; description: string }) => {
     const res = await api.post("/surveys/", data);
     return res.data;
   },
@@ -26,61 +28,44 @@ export const surveysService = {
     data: Partial<{
       title: string;
       description: string;
-    }>
+    }>,
   ) => {
-    const res = await api.put(
-      `/surveys/${id}`,
-      data
-    );
+    const res = await api.put(`/surveys/${id}`, data);
 
     return res.data;
   },
 
   delete: async (id: number) => {
-    const res = await api.delete(
-      `/surveys/${id}`
-    );
+    const res = await api.delete(`/surveys/${id}`);
 
     return res.data;
   },
 
   publish: async (id: number) => {
-    const res = await api.post(
-      `/surveys/${id}/publish`
-    );
+    const res = await api.post(`/surveys/${id}/publish`);
 
     return res.data;
   },
 
   unpublish: async (id: number) => {
-    const res = await api.post(
-      `/surveys/${id}/unpublish`
-    );
+    const res = await api.post(`/surveys/${id}/unpublish`);
 
     return res.data;
   },
 
-   exportCsv: async (surveyId: number) => {
-    const res = await api.get(
-      `/surveys/${surveyId}/export/csv`,
-      {
-        responseType: "blob",
-      }
-    );
+  exportCsv: async (surveyId: number) => {
+    const res = await api.get(`/surveys/${surveyId}/export/csv`, {
+      responseType: "blob",
+    });
 
     return res.data;
   },
 
   exportExcel: async (surveyId: number) => {
-    const res = await api.get(
-      `/surveys/${surveyId}/export/excel`,
-      {
-        responseType: "blob",
-      }
-    );
+    const res = await api.get(`/surveys/${surveyId}/export/excel`, {
+      responseType: "blob",
+    });
 
     return res.data;
   },
-
 };
-
