@@ -1,13 +1,10 @@
 // src/app/respondent/layout.tsx
-
 "use client";
 
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-
 import RouteGuard from "@/components/auth/RouteGuard";
-
 import { authStorage } from "@/lib/auth-storage";
 import { useAuthStore } from "@/store/auth.store";
 
@@ -18,126 +15,113 @@ export default function RespondentLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-
   const logout = useAuthStore((s) => s.logout);
-
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleLogout = () => {
     authStorage.clear();
-
     logout();
-
     router.push("/login");
   };
 
   const menu = [
-    {
-      label: "Dashboard",
-      href: "/respondent/dashboard",
-    },
-    {
-      label: "Enquêtes",
-      href: "/respondent/surveys",
-    },
-    {
-      label: "Mes participations",
-      href: "/respondent/participations",
-      badge: "Data",
-    },
-    {
-      label: "Profil",
-      href: "/respondent/profile",
-    },
+    { label: "Dashboard", href: "/respondent/dashboard" },
+    { label: "Enquêtes", href: "/respondent/surveys" },
+    { label: "Mes participations", href: "/respondent/participations", badge: "Data" },
+    { label: "Profil", href: "/respondent/profile" },
   ];
 
   return (
     <RouteGuard>
-      <div className="min-h-screen bg-bg text-text-primary">
+      <div className="min-h-screen bg-[#070C14] text-white">
         {/* MOBILE HEADER */}
-        <header
-          className="
-            md:hidden
-            sticky top-0 z-50
-            bg-surface
-            border-b border-border
-            px-4 py-4
-            flex items-center justify-between
-          "
-        >
+        <header className="md:hidden sticky top-0 z-50 bg-[#111A2E] border-b border-[#24314D] px-4 py-4 flex items-center justify-between">
           <div>
-            <h1 className="font-bold text-primary text-xl">EnqIA</h1>
-
-            <p className="text-xs text-text-secondary">Répondant</p>
+            <h1 className="font-black text-blue-500 text-xl tracking-tight">EnqIA</h1>
+            <p className="text-[10px] font-bold uppercase tracking-wider text-[#A9B4CC]">Répondant</p>
           </div>
 
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="
-              w-10 h-10
-              rounded-lg
-              border border-border
-              flex items-center justify-center
-            "
+            className="w-10 h-10 rounded-xl border border-[#24314D] bg-[#0B1220] flex items-center justify-center text-white font-mono text-xl"
           >
-            ☰
+            {mobileMenuOpen ? "✕" : "☰"}
           </button>
         </header>
 
-        {/* MOBILE MENU */}
+        {/* MOBILE MENU OVERLAY */}
         {mobileMenuOpen && (
-          <div
-            className="
-              md:hidden
-              fixed inset-0
-              z-50
-              bg-black/50
-            "
-          >
-            <div
-              className="
-                w-72 h-full
-                bg-surface
-                border-r border-border
-                p-6
-                flex flex-col
-              "
-            >
-              <div className="mb-6">
-                <h2 className="font-bold text-xl text-primary">EnqIA</h2>
+          <div className="md:hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm">
+            <div className="w-72 h-full bg-[#111A2E] border-r border-[#24314D] p-6 flex flex-col justify-between">
+              <div className="space-y-6">
+                <div>
+                  <h2 className="font-black text-xl text-blue-500 tracking-tight">EnqIA</h2>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-[#A9B4CC]">Espace personnel</p>
+                </div>
 
-                <p className="text-sm text-text-secondary">Répondant</p>
+                <nav className="space-y-1">
+                  {menu.map((item) => {
+                    const active = pathname === item.href;
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={`flex items-center justify-between px-4 py-3 rounded-xl transition-all text-sm font-medium ${
+                          active ? "bg-blue-600 text-white font-bold" : "text-[#A9B4CC] hover:bg-[#0B1220] hover:text-white"
+                        }`}
+                      >
+                        <span>{item.label}</span>
+                        {item.badge && (
+                          <span className={`text-[10px] px-2 py-0.5 rounded-md font-mono font-bold uppercase tracking-wider ${
+                            active ? "bg-white/20 text-white" : "bg-blue-500/10 text-blue-400 border border-blue-500/10"
+                          }`}>
+                            {item.badge}
+                          </span>
+                        )}
+                      </Link>
+                    );
+                  })}
+                </nav>
               </div>
 
-              <nav className="flex-1 space-y-2">
+              <div className="space-y-4">
+                <button
+                  onClick={handleLogout}
+                  className="w-full py-2.5 rounded-xl text-xs font-bold bg-[#0B1220] border border-[#24314D] text-red-400 hover:bg-red-600/10 hover:border-red-500/20 transition-all"
+                >
+                  Déconnexion
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="flex">
+          {/* DESKTOP SIDEBAR */}
+          <aside className="hidden md:flex w-72 bg-[#111A2E] border-r border-[#24314D] flex-col justify-between min-h-screen sticky top-0">
+            <div className="flex-1">
+              <div className="p-6 border-b border-[#24314D]/40">
+                <h1 className="text-2xl font-black text-blue-500 tracking-tight">EnqIA</h1>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-[#A9B4CC] mt-0.5">Espace personnel</p>
+              </div>
+
+              <nav className="p-4 space-y-1">
                 {menu.map((item) => {
                   const active = pathname === item.href;
-
                   return (
                     <Link
                       key={item.href}
                       href={item.href}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className={`
-                        flex items-center justify-between
-                        px-4 py-3 rounded-xl
-                        transition
-                        ${active ? "bg-primary text-white" : "hover:bg-bg"}
-                      `}
+                      className={`flex items-center justify-between px-4 py-2.5 rounded-xl transition-all text-sm font-medium ${
+                        active ? "bg-blue-600 text-white font-bold shadow-lg shadow-blue-600/10" : "text-[#A9B4CC] hover:bg-[#0B1220] hover:text-white"
+                      }`}
                     >
                       <span>{item.label}</span>
-
                       {item.badge && (
-                        <span
-                          className={`
-                            text-xs px-2 py-1 rounded-full
-                            ${
-                              active
-                                ? "bg-white/20"
-                                : "bg-primary/15 text-primary"
-                            }
-                          `}
-                        >
+                        <span className={`text-[10px] px-2 py-0.5 rounded-md font-mono font-bold uppercase tracking-wider ${
+                          active ? "bg-white/20 text-white" : "bg-blue-500/10 text-blue-400 border border-blue-500/10"
+                        }`}>
                           {item.badge}
                         </span>
                       )}
@@ -145,103 +129,24 @@ export default function RespondentLayout({
                   );
                 })}
               </nav>
+            </div>
 
+            <div className="p-4 border-t border-[#24314D]/40 space-y-4">
               <button
                 onClick={handleLogout}
-                className="
-                  w-full
-                  py-3
-                  rounded-lg
-                  border border-border
-                  hover:bg-bg
-                  transition
-                "
+                className="w-full py-2.5 rounded-xl text-xs font-bold bg-[#0B1220] border border-[#24314D] text-red-400 hover:bg-red-500/10 hover:border-red-500/20 transition-all"
               >
                 Déconnexion
               </button>
-            </div>
-          </div>
-        )}
-
-        <div className="flex">
-          {/* DESKTOP SIDEBAR */}
-          <aside
-            className="
-              hidden md:flex
-              w-72
-              bg-surface
-              border-r border-border
-              flex-col
-              min-h-screen
-            "
-          >
-            <div className="p-6 border-b border-border">
-              <h1 className="text-2xl font-bold text-primary">EnqIA</h1>
-
-              <p className="text-sm text-text-secondary mt-1">Répondant</p>
-            </div>
-
-            <nav className="flex-1 p-4 space-y-2">
-              {menu.map((item) => {
-                const active = pathname === item.href;
-
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={`
-                      flex items-center justify-between
-                      px-4 py-3 rounded-xl transition
-                      ${active ? "bg-primary text-white" : "hover:bg-bg"}
-                    `}
-                  >
-                    <span>{item.label}</span>
-
-                    {item.badge && (
-                      <span
-                        className={`
-                          text-xs px-2 py-1 rounded-full
-                          ${
-                            active
-                              ? "bg-white/20"
-                              : "bg-primary/15 text-primary"
-                          }
-                        `}
-                      >
-                        {item.badge}
-                      </span>
-                    )}
-                  </Link>
-                );
-              })}
-            </nav>
-
-            <div className="p-6 border-t border-border">
-              <button
-                onClick={handleLogout}
-                className="
-                  w-full
-                  py-3
-                  rounded-lg
-                  border border-border
-                  hover:bg-bg
-                  transition
-                "
-              >
-                Déconnexion
-              </button>
-
-              <p className="text-xs text-text-secondary mt-4">
-                EnqIA Respondent Portal
-              </p>
-
-              <p className="text-xs text-text-secondary mt-1">Version 1.0</p>
+              <div className="text-center">
+                <p className="text-[10px] font-mono text-[#A9B4CC]/40 tracking-wider uppercase">Portal v1.0 • Secure Session</p>
+              </div>
             </div>
           </aside>
 
-          {/* CONTENT */}
+          {/* MAIN PAGE CONTAINER */}
           <main className="flex-1 min-w-0">
-            <div className="p-4 md:p-8">{children}</div>
+            <div className="p-4 md:p-8 max-w-6xl mx-auto">{children}</div>
           </main>
         </div>
       </div>
