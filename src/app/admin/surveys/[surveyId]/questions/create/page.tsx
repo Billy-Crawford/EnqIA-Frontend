@@ -1,10 +1,10 @@
 // src/app/admin/surveys/[surveyId]/questions/create/page.tsx
-
 "use client";
 
 import { useState, use, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { questionsService } from "@/services/questions.service";
+import Link from "next/link";
 
 export default function CreateQuestionPage({
   params,
@@ -12,8 +12,6 @@ export default function CreateQuestionPage({
   params: Promise<{ surveyId: string }>;
 }) {
   const router = useRouter();
-
-  // ✅ FIX NEXT 16 PROPRE
   const { surveyId } = use(params);
   const id = Number(surveyId);
 
@@ -23,7 +21,6 @@ export default function CreateQuestionPage({
     options: "",
   });
 
-  // 🔒 sécurité anti NaN (IMPORTANT)
   useEffect(() => {
     if (!id || Number.isNaN(id)) {
       console.error("Invalid surveyId:", surveyId);
@@ -46,48 +43,67 @@ export default function CreateQuestionPage({
   };
 
   return (
-    <div className="max-w-xl space-y-4">
-      <h1 className="text-2xl font-bold">Créer une question</h1>
+    <div className="max-w-xl space-y-6 select-none">
+      <div className="flex flex-col gap-1 border-b border-[#24314D]/40 pb-6">
+        <Link href={`/admin/surveys/${id}/questions`} className="text-xs font-bold text-blue-400 hover:text-blue-300 transition-colors">
+          ← Retour aux questions
+        </Link>
+        <h1 className="text-3xl font-extrabold text-white tracking-tight mt-1">
+          Créer une question
+        </h1>
+      </div>
 
-      <input
-        className="w-full p-3 border border-border bg-surface rounded"
-        placeholder="Titre"
-        value={form.title}
-        onChange={(e) =>
-          setForm({ ...form, title: e.target.value })
-        }
-      />
+      <div className="bg-[#111A2E] border border-[#24314D] rounded-2xl p-6 space-y-5 shadow-xl">
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs font-bold uppercase tracking-wider text-[#A9B4CC]">Intitulé de la question</label>
+          <input
+            type="text"
+            className="w-full px-4 py-3 rounded-xl bg-[#0B1220] border border-[#24314D] text-white text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200"
+            placeholder="Ex: Quel est votre niveau d'expérience en IA ?"
+            value={form.title}
+            onChange={(e) => setForm({ ...form, title: e.target.value })}
+          />
+        </div>
 
-      <select
-        className="w-full p-3 border border-border bg-surface rounded"
-        value={form.type}
-        onChange={(e) =>
-          setForm({ ...form, type: e.target.value })
-        }
-      >
-        <option value="text">Text</option>
-        <option value="single_choice">Single choice</option>
-        <option value="multiple_choice">Multiple choice</option>
-        <option value="likert">Likert</option>
-      </select>
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs font-bold uppercase tracking-wider text-[#A9B4CC]">Format de réponse</label>
+          <select
+            className="w-full px-4 py-3 rounded-xl bg-[#0B1220] border border-[#24314D] text-white text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 cursor-pointer"
+            value={form.type}
+            onChange={(e) => setForm({ ...form, type: e.target.value })}
+          >
+            <option value="text">Texte libre</option>
+            <option value="single_choice">Choix unique (Radio)</option>
+            <option value="multiple_choice">Choix multiples (Checkbox)</option>
+            <option value="likert">Échelle de Likert</option>
+          </select>
+        </div>
 
-      {form.type !== "text" && (
-        <input
-          className="w-full p-3 border border-border bg-surface rounded"
-          placeholder="Options séparées par virgule"
-          value={form.options}
-          onChange={(e) =>
-            setForm({ ...form, options: e.target.value })
-          }
-        />
-      )}
+        {form.type !== "text" && (
+          <div className="flex flex-col gap-1.5 animate-fadeIn">
+            <label className="text-xs font-bold uppercase tracking-wider text-[#A9B4CC]">Options de choix</label>
+            <input
+              type="text"
+              className="w-full px-4 py-3 rounded-xl bg-[#0B1220] border border-[#24314D] text-white text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200"
+              placeholder="Débutant, Intermédiaire, Expert"
+              value={form.options}
+              onChange={(e) => setForm({ ...form, options: e.target.value })}
+            />
+            <p className="text-[11px] text-[#A9B4CC]/60 mt-0.5">Séparez chaque option disponible par une simple virgule.</p>
+          </div>
+        )}
 
-      <button
-        onClick={submit}
-        className="px-4 py-2 bg-primary text-white rounded"
-      >
-        Créer
-      </button>
+        <div className="pt-2">
+          <button
+            type="button"
+            onClick={submit}
+            className="px-6 py-3 rounded-xl text-white font-bold bg-blue-600 hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/20 text-sm active:scale-[0.98]"
+          >
+            Créer la question
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
+

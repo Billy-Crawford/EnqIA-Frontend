@@ -3,22 +3,32 @@
 import { clsx } from "clsx";
 
 type CardProps = {
-  children: React.ReactNode;
+  title: string;
+  value: number | string;
   className?: string;
 };
 
 export default function Card({
   title,
   value,
-}: {
-  title: string;
-  value: number | string;
-}) {
+  className,
+}: CardProps) {
   return (
-    <div className="bg-surface border border-border rounded-xl p-5">
-      <p className="text-sm text-text-secondary">{title}</p>
+    <div
+      className={clsx(
+        "bg-[#111A2E] border border-[#24314D] rounded-2xl p-6 shadow-xl shadow-black/20 transition-all duration-300 hover:border-blue-500/40 hover:shadow-black/40 flex flex-col justify-between min-h-[120px]",
+        className
+      )}
+    >
+      {/* Titre : Gris clair chaud, parfaitement lisible et contrasté sur le fond bleu nuit */}
+      <p className="text-xs font-bold tracking-wider uppercase text-[#A9B4CC]">
+        {title}
+      </p>
 
-      <h3 className="text-3xl font-bold mt-2 text-primary">{value}</h3>
+      {/* Valeur numérique ou textuelle : Blanc pur texturé, grand format pour sauter aux yeux */}
+      <h3 className="text-3xl font-black mt-4 text-white tracking-tight font-mono">
+        {value}
+      </h3>
     </div>
   );
 }
